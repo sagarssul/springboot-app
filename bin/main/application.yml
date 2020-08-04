@@ -1,0 +1,38 @@
+arsenal:
+  makeupar:
+    applyMakeupVersionApi: http://54.87.187.253/makeupar/v2/applymakeup
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        
+server:
+  port: 8082
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: arsenal-looks-services
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+  data:
+    mongodb:
+      primary:
+        host: localhost
+        port: 27017
+        database: arsenal
+      secondary:
+       host: cluster0-zkstk.mongodb.net
+       port: 27017
+       database: arsenal
+       username: arsenal
+       password: password%40123
+       uri: mongodb+srv://arsenal:password%40123@cluster0-zkstk.mongodb.net/arsenal
+  servlet:
+    multipart:
+      enabled: true
+      
+springdoc:
+  packagesToScan: com.ust.pnp.arsenal.*

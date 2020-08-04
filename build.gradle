@@ -1,0 +1,81 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'org.asciidoctor.convert' version '1.5.8'
+    id 'groovy'
+}
+
+group = 'com.ust.pnp'
+version = '0.1'
+sourceCompatibility = '8'
+
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+    set('springCloudVersion', "Hoxton.SR1")
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.codehaus.groovy:groovy'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.1.44'
+    compileOnly 'org.projectlombok:lombok'
+    compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.0'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8'
+	annotationProcessor 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.junit.jupiter:junit-jupiter:5.4.0')
+    testCompile group: 'de.bwaldvogel', name: 'mongo-java-server', version: '1.24.0'
+
+    test {
+        useJUnit {
+            includeCategories 'com.ust.pnp.arsenal.manager.LooksManagerTest'
+            includeCategories 'com.ust.pnp.arsenal.manager.LooksManagerMongoTest'
+        }
+    }
+    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.0'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+
+
+    // Semantics3 for product catalogue API
+    //compile group: 'com.semantics3', name: 'Sem3Java', version: '1.2.4'
+
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+test {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
